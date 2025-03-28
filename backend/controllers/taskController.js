@@ -13,7 +13,7 @@ const createTask = async (req, res) => {
         const task = await Task.create({
             title,
             description,
-            assignedTo: assignedUser._id, // Store User ID, not email
+            assignedTo: { userId: assignedUser._id, email: assignedUser.email }, // Store both ID and email
             createdBy: req.user.id, // User who created the task
         });
 
@@ -25,7 +25,7 @@ const createTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
     try {
-      const tasks = await Task.find();
+      const tasks = await Task.find().populate("createdBy", "email"); // Populate createdBy
       console.log("Tasks sent to frontend:", tasks); // Debugging output
       res.json(tasks); // Ensure an array is sent
     } catch (error) {

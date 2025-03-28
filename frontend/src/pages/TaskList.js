@@ -51,7 +51,7 @@ const TaskList = ({ refresh }) => {
                                         <strong>Status:</strong> {task.status}
                                     </Card.Text>
                                     <Card.Text>
-                                        <strong>Assigned To:</strong> {task.assignedTo}
+                                    <strong>Assigned To:</strong> {task.assignedTo?.email || "Unknown"}
                                     </Card.Text>
                                     <Card.Text>
                                         <strong>Created At:</strong> {new Date(task.createdAt).toLocaleString()}
