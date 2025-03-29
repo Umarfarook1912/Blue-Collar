@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const CreateTask = ({ onTaskCreated }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const taskToEdit = location.state?.task; // Get task data if editing
+    const taskToEdit = location.state?.task; 
 
     const [formData, setFormData] = useState({
         title: "",
@@ -43,7 +42,7 @@ const CreateTask = ({ onTaskCreated }) => {
                 ? `http://localhost:5000/api/tasks/${taskToEdit._id}`
                 : "http://localhost:5000/api/tasks";
 
-            const method = taskToEdit ? "PUT" : "POST"; // Change method for updates
+            const method = taskToEdit ? "PUT" : "POST";
 
             const response = await fetch(url, {
                 method: method,
@@ -92,7 +91,6 @@ const CreateTask = ({ onTaskCreated }) => {
                 </Button>
             </Form>
 
-            <ToastContainer />
         </Container>
     );
 };

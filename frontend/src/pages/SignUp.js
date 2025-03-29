@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Form, Button, Container } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {  toast } from "react-toastify";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -25,16 +24,16 @@ const SignUp = () => {
 
       toast.success("Signup Successful! Redirecting to login...", {
         position: "top-right",
-        autoClose: 2000, // Closes after 2 seconds
+        autoClose: 2000, 
       });
 
       setTimeout(() => {
-        navigate("/login"); // Redirect after toast
+        navigate("/login"); 
       }, 2000);
     } catch (err) {
       toast.error(err.response?.data?.message || "Signup failed!", {
         position: "top-right",
-        autoClose: 3000, // Closes after 3 seconds
+        autoClose: 3000, 
       });
     }
   };
@@ -89,7 +88,6 @@ const SignUp = () => {
         </Button>
       </Form>
 
-      <ToastContainer />
     </Container>
   );
 };

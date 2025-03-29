@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["supervisor", "worker"], required: true },
 });
 
-// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);

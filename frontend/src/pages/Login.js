@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {  toast } from "react-toastify";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -80,7 +79,6 @@ const Login = () => {
         <Button variant="primary" type="submit">Login</Button>
       </Form>
 
-      <ToastContainer />
     </Container>
   );
 };

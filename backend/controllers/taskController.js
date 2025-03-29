@@ -13,8 +13,8 @@ const createTask = async (req, res) => {
     const task = await Task.create({
       title,
       description,
-      assignedTo: { userId: assignedUser._id, email: assignedUser.email }, // Store both ID and email
-      createdBy: req.user.id, // User who created the task
+      assignedTo: { userId: assignedUser._id, email: assignedUser.email }, 
+      createdBy: req.user.id, 
     });
 
     res.status(201).json(task);
@@ -25,9 +25,9 @@ const createTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find().populate("createdBy", "email"); // Populate createdBy
-    console.log("Tasks sent to frontend:", tasks); // Debugging output
-    res.json(tasks); // Ensure an array is sent
+    const tasks = await Task.find().populate("createdBy", "email"); 
+    console.log("Tasks sent to frontend:", tasks); 
+    res.json(tasks); 
   } catch (error) {
     console.error("Error fetching tasks:", error);
     res.status(500).json({ message: error.message });
@@ -63,4 +63,17 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { createTask, getTasks, updateTask, deleteTask };
+const updateTaskStatus = async (req, res) => {
+  try {
+      const task = await Task.findById(req.params.id);
+      if (!task) return res.status(404).json({ message: "Task not found" });
+
+      task.status = req.body.status || task.status;
+      await task.save();
+      res.json({ message: "Task status updated successfully" });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { createTask, getTasks, updateTask, deleteTask,updateTaskStatus };
