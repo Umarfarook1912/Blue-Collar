@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const CreateTask = ({ onTaskCreated }) => {
-    const [formData, setFormData] = useState({ title: "", description: "", assignedTo: "" });
+    const navigate = useNavigate();
+    const location = useLocation();
+    const taskToEdit = location.state?.task; // Get task data if editing
+
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        assignedTo: "",
+    });
+
+    useEffect(() => {
+        if (taskToEdit) {
+            setFormData({
+                title: taskToEdit.title,
+                description: taskToEdit.description,
+                assignedTo: taskToEdit.assignedTo?.email || "",
+            });
+        }
+    }, [taskToEdit]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,42 +31,46 @@ const CreateTask = ({ onTaskCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const token = localStorage.getItem("token");
 
         if (!token) {
-            toast.error("User not authenticated. Please log in.", { position: "top-right" });
+            toast.error("User not authenticated. Please log in.");
             return;
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/tasks", {
-                method: "POST",
+            const url = taskToEdit
+                ? `http://localhost:5000/api/tasks/${taskToEdit._id}`
+                : "http://localhost:5000/api/tasks";
+
+            const method = taskToEdit ? "PUT" : "POST"; // Change method for updates
+
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Send the token correctly
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Failed to create task");
+                throw new Error("Failed to save task");
             }
 
-            toast.success("Task Created Successfully!", { position: "top-right", autoClose: 2000 });
+            toast.success(taskToEdit ? "Task Updated Successfully!" : "Task Created Successfully!");
 
             setFormData({ title: "", description: "", assignedTo: "" });
 
+            setTimeout(() => taskToEdit? navigate("/task-list"): navigate("/create-task"), 2000); 
         } catch (error) {
-            toast.error(`Error: ${error.message}`, { position: "top-right" });
+            toast.error(`Error: ${error.message}`);
         }
     };
 
-
     return (
         <Container className="mt-5">
-            <h2>Create Task</h2>
+            <h2>{taskToEdit ? "Update Task" : "Create Task"}</h2>
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="title">
                     <Form.Label>Title</Form.Label>
@@ -64,7 +87,9 @@ const CreateTask = ({ onTaskCreated }) => {
                     <Form.Control type="email" name="assignedTo" value={formData.assignedTo} onChange={handleChange} required />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-3">Create Task</Button>
+                <Button variant="primary" type="submit" className="mt-3">
+                    {taskToEdit ? "Update Task" : "Create Task"}
+                </Button>
             </Form>
 
             <ToastContainer />

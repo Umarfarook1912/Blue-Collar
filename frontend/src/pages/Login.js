@@ -22,10 +22,12 @@ const Login = () => {
 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", formData);
-      const { token, user } = response.data; // Expecting { token, user: { name, email, role } }
+      const { token, user } = response.data;
 
       localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role); // Store role in localStorage
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("user", JSON.stringify({ email: user.email, role: user.role }));
+
 
       toast.success("Login Successful! Redirecting...", {
         position: "top-right",
