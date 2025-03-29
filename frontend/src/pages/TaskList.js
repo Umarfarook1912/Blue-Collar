@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./TaskList.css";
 
 const TaskList = ({ refresh }) => {
     const [tasks, setTasks] = useState([]);
@@ -39,7 +40,7 @@ const TaskList = ({ refresh }) => {
     }, [refresh]);
 
     const handleEdit = (task) => {
-        navigate("/create-task", { state: { task } }); // Pass task data
+        navigate("/create-task", { state: { task } });
     };
 
     const handleDelete = async (taskId) => {
@@ -56,8 +57,7 @@ const TaskList = ({ refresh }) => {
 
             toast.success("Task Deleted Successfully!");
 
-            // Fetch tasks after toast is shown
-            setTimeout(() => fetchTasks(), 1000); // Reduce timeout for better UX
+            setTimeout(() => fetchTasks(), 1000);
         } catch (error) {
             toast.error(`Error: ${error.message}`);
         }
@@ -66,9 +66,10 @@ const TaskList = ({ refresh }) => {
     const handleStatusChange = (taskId, newStatus) => {
         setEditedTasks((prev) => ({
             ...prev,
-            [taskId]: newStatus, // Store the updated status for each task
+            [taskId]: newStatus,
         }));
     };
+
     const handleSaveStatus = async (taskId) => {
         try {
             const token = localStorage.getItem("token");
@@ -86,16 +87,13 @@ const TaskList = ({ refresh }) => {
                 throw new Error("Failed to update status");
             }
 
-            // Show toast message
             toast.success("Status updated successfully!", {
                 position: "top-right",
                 autoClose: 2000,
             });
 
-            // Delay fetching tasks slightly to improve UX
             setTimeout(() => fetchTasks(), 3000);
 
-            // Reset the edited task status
             setEditedTasks((prev) => {
                 const updatedTasks = { ...prev };
                 delete updatedTasks[taskId];
@@ -107,13 +105,13 @@ const TaskList = ({ refresh }) => {
     };
 
     return (
-        <Container className="mt-4">
-            <h2 className="mb-3">Task List</h2>
+        <Container className="task-list-container">
+            <h2 className="text-center task-title">Task List</h2>
             {tasks.length > 0 ? (
                 <Row>
                     {tasks.map((task) => (
-                        <Col key={task._id} xs={12} md={6} lg={4} className="mb-3">
-                            <Card className="shadow-sm">
+                        <Col key={task._id} xs={12} md={6} lg={4} className="mb-4">
+                            <Card className="task-card shadow-lg">
                                 <Card.Body>
                                     <Card.Title>{task.title}</Card.Title>
                                     <Card.Text><strong>Description:</strong> {task.description}</Card.Text>
@@ -134,22 +132,22 @@ const TaskList = ({ refresh }) => {
 
                                     {editedTasks[task._id] && editedTasks[task._id] !== task.status && (
                                         <Button
-                                            variant="success"
-                                            className="mt-2"
+                                            variant="info"
+                                            className="mt-2 save-btn"
                                             onClick={() => handleSaveStatus(task._id)}
                                         >
                                             Save
                                         </Button>
                                     )}
                                     {userRole === "supervisor" && (
-                                        <>
-                                            <Button variant="warning" className="me-2" onClick={() => handleEdit(task)}>
+                                        <div className="button-group d-flex justify-content-end gap-2 mt-3">
+                                            <Button variant="primary" className="edit-btn" onClick={() => handleEdit(task)}>
                                                 Edit
                                             </Button>
-                                            <Button variant="danger" onClick={() => handleDelete(task._id)}>
+                                            <Button variant="danger" className="delete-btn" onClick={() => handleDelete(task._id)}>
                                                 Delete
                                             </Button>
-                                        </>
+                                        </div>
                                     )}
                                 </Card.Body>
                             </Card>
@@ -157,7 +155,7 @@ const TaskList = ({ refresh }) => {
                     ))}
                 </Row>
             ) : (
-                <p>No tasks available.</p>
+                <p className="text-center text-muted">No tasks available.</p>
             )}
         </Container>
     );

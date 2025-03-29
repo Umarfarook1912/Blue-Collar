@@ -1,0 +1,27 @@
+.task-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.task-form-card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.task-form-card h2 {
+    font-weight: bold;
+}
+
+.task-form-card input,
+.task-form-card textarea {
+    border-radius: 5px;
+}
+
+.task-form-card button {
+    border-radius: 5px;
+    font-weight: bold;
+}

@@ -1,0 +1,41 @@
+body{
+    font-family: poppins !important;
+}
+.custom-card {
+    background: linear-gradient(90deg, #021639, #031437);
+    color: white;
+    border: none;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    
+  }
+  
+  .custom-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+  }
+  
+  .custom-inner-card {
+    background: #ffffff;
+    color: #021639;
+    text-align: center;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    max-width: 70%;
+    margin:0 auto;
+  }
+  
+  .custom-inner-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 10px rgba(2, 22, 57, 0.3);
+  }
+  
+  .custom-btn {
+    transition: transform 0.2s ease-in-out;
+    background-color: #03183d !important;
+    color: white !important;
+  }
+  
+  .custom-btn:hover {
+    transform: scale(1.1);
+  }
+  
