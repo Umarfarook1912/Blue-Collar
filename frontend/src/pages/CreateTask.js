@@ -13,7 +13,7 @@ const CreateTask = ({ onTaskCreated }) => {
     const {
         register,
         handleSubmit,
-        setValue,
+        setValue, reset,
         formState: { errors },
     } = useForm();
 
@@ -50,10 +50,14 @@ const CreateTask = ({ onTaskCreated }) => {
             });
 
             if (!response.ok) {
-                throw new Error("Failed to save task");
+                throw new Error("Failed to save task or User not found");
             }
 
             toast.success(taskToEdit ? "Task Updated Successfully!" : "Task Created Successfully!");
+            if (!taskToEdit) {
+                reset();
+            }
+
 
             setTimeout(() => (taskToEdit ? navigate("/task-list") : navigate("/create-task")), 2000);
         } catch (error) {
