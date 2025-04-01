@@ -1,11 +1,15 @@
+
 import React from "react";
 import { Container } from "react-bootstrap";
+import "./NavbarFooter.css";
 
 const FooterComponent = () => {
   return (
-    <footer className="bg-dark text-light text-center py-3 mt-4">
+    <footer className="custom-footer">
       <Container>
-        <p>&copy; {new Date().getFullYear()} Blue Collar Management. All Rights Reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} Blue Collar Management. All Rights Reserved.
+        </p>
       </Container>
     </footer>
   );
