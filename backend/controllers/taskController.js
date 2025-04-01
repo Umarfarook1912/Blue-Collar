@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to Send Email
 const sendTaskEmail = async (email, task, supervisorName) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -34,32 +33,28 @@ const sendTaskEmail = async (email, task, supervisorName) => {
 };
 
 
-// Create Task API (Updated)
 const createTask = async (req, res) => {
   try {
     const { title, description, assignedTo } = req.body;
 
-    // Fetch Assigned User
     const assignedUser = await User.findOne({ email: assignedTo });
     if (!assignedUser) {
       return res.status(400).json({ message: "Assigned user not found" });
     }
 
-    // Fetch Supervisor (Created By)
     const supervisor = await User.findById(req.user.id);
     if (!supervisor) {
       return res.status(400).json({ message: "Supervisor not found" });
     }
 
-    // Create Task
+  
     const task = await Task.create({
       title,
       description,
       assignedTo: { userId: assignedUser._id, email: assignedUser.email },
-      createdBy: supervisor._id, // Store supervisor's ID
+      createdBy: supervisor._id, 
     });
 
-    // Send Email with Supervisor's Name
     await sendTaskEmail(assignedTo, task, supervisor.name);
 
     res.status(201).json(task);
