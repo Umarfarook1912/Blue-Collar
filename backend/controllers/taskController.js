@@ -1,27 +1,69 @@
 const Task = require("../models/Task");
 const User = require("../models/user");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+const sendTaskEmail = async (email, task, supervisorName) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "New Task Assigned to You",
+    html: `
+          <p><strong>Task Title:</strong> ${task.title}</p>
+          <p><strong>Description:</strong> ${task.description}</p>
+          <p><strong>Assigned By:</strong> ${supervisorName}</p>
+          <p>Please check your task dashboard for details.</p>
+      `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent to:", email);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+
 const createTask = async (req, res) => {
   try {
     const { title, description, assignedTo } = req.body;
 
     const assignedUser = await User.findOne({ email: assignedTo });
-
     if (!assignedUser) {
       return res.status(400).json({ message: "Assigned user not found" });
     }
 
+    const supervisor = await User.findById(req.user.id);
+    if (!supervisor) {
+      return res.status(400).json({ message: "Supervisor not found" });
+    }
+
+  
     const task = await Task.create({
       title,
       description,
       assignedTo: { userId: assignedUser._id, email: assignedUser.email },
-      createdBy: req.user.id,
+      createdBy: supervisor._id, 
     });
+
+    await sendTaskEmail(assignedTo, task, supervisor.name);
 
     res.status(201).json(task);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 const getTasks = async (req, res) => {
   try {

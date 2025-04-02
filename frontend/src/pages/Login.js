@@ -16,7 +16,7 @@ const Login = () => {
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
-      localStorage.setItem("user", JSON.stringify({ email: user.email, role: user.role }));
+      localStorage.setItem("user", JSON.stringify({ email: user.email, role: user.role, name: user.name }));
 
       toast.success("Login Successful! Redirecting...", { autoClose: 2000 });
 
@@ -52,10 +52,11 @@ const Login = () => {
           />
           {errors.password && <p className="text-danger">{errors.password.message}</p>}
         </Form.Group>
+
         <div className="d-flex justify-content-center">
-        <Button variant="success" type="submit" className="mt-3 w-25 ">
-          Login
-        </Button>
+          <Button variant="success" type="submit" className="mt-3 w-25">
+            Login
+          </Button>
         </div>
       </Form>
 
