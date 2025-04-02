@@ -42,6 +42,9 @@ const NavbarComponent = () => {
               user ? (
                 <>
                   <Nav.Link className="nav-link-custom">Welcome!! {user.name}</Nav.Link>
+                  <Nav.Link as={Link} to="/task-list" className="nav-link-custom">
+                    Task List
+                  </Nav.Link>
                   <Button variant="danger" onClick={handleLogout} className="ms-3">
                     Logout
                   </Button>
