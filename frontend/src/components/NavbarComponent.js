@@ -30,7 +30,7 @@ const NavbarComponent = () => {
     <Navbar expand="lg" className="custom-navbar">
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="brand-text">
-          Blue Collar Management
+          Blue Collar Labour Management
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -38,7 +38,7 @@ const NavbarComponent = () => {
             <Nav.Link as={Link} to="/" className="nav-link-custom">
               Home
             </Nav.Link>
-            {!loading && ( 
+            {!loading && (
               user ? (
                 <>
                   <Nav.Link className="nav-link-custom">Welcome!! {user.name}</Nav.Link>
