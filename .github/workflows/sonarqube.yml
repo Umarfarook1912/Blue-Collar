@@ -32,6 +32,6 @@ jobs:
           SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
-            -Dsonar.projectKey=blue-collar
+            -Dsonar.projectKey=Umarfarook1912_Blue-Collar
             -Dsonar.organization=Umarfarook
 
