@@ -33,4 +33,5 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=blue-collar
-            -Dsonar.organization=Blue-Collar
+            -Dsonar.organization=Umarfarook
+
