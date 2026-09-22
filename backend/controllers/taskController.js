@@ -1,14 +1,37 @@
 const Task = require("../models/Task");
 const User = require("../models/user");
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 require("dotenv").config();
 
+// Prefer IPv4: Node's default "verbatim" order makes dns.lookup return IPv6
+// first; Nodemailer falls back to that after resolve4 fails, and IPv6:587 is
+// refused on this network.
+if (typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
+
+const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+const smtpPort = Number(process.env.SMTP_PORT) || 587;
+const smtpSecure =
+  String(process.env.SMTP_SECURE).toLowerCase() === "true" ||
+  process.env.SMTP_PORT === "465";
+
+// AVG Web/Mail Shield MITMs SMTP TLS with its own CA; Node rejects that chain
+// unless verification is relaxed (or the AVG root is added to Node's trust store).
+const rejectUnauthorized =
+  String(process.env.SMTP_TLS_REJECT_UNAUTHORIZED || "false").toLowerCase() ===
+  "true";
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: smtpHost,
+  port: smtpPort,
+  secure: smtpSecure,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: (process.env.EMAIL_PASS || "").replace(/\s/g, ""),
   },
+  tls: { rejectUnauthorized },
 });
 
 const sendTaskEmail = async (email, task, supervisorName) => {
@@ -29,6 +52,11 @@ const sendTaskEmail = async (email, task, supervisorName) => {
     console.log("Email sent to:", email);
   } catch (error) {
     console.error("Error sending email:", error);
+    if (error.code === "EAUTH") {
+      console.error(
+        "Gmail rejected login. Use a Google App Password (not your normal password) in EMAIL_PASS. See https://support.google.com/accounts/answer/185833"
+      );
+    }
   }
 };
 
